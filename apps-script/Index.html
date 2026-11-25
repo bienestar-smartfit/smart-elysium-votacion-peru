@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Elysium Perú</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
+<style>
+/* Layout: invitación Smart Elysium — papiro con meandro dorado, columnas a los lados del título, tarjetas tipo pergamino. Tema único claro, como la invitación. */
+:root{
+  --oro:#fdb813; --oro-osc:#e09b00; --oro-txt:#8a5a00; --oro-suave:#fff2b0;
+  --tinta:#161412; --papiro:#f3e9d8; --papiro-2:#ecdfc8; --blanco:#fffdf8; --gris:#5b544b; --linea:#e3d3b4;
+  --ok:#1f7a45; --ok-suave:#dcf0e2; --alerta:#9a4d00; --alerta-suave:#fde3c2;
+  --display:"Cinzel",Georgia,serif;
+  --body:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --meandro:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23fdb813'%3E%3Crect x='0' y='0' width='64' height='8'/%3E%3Crect x='0' y='56' width='64' height='8'/%3E%3Crect x='8' y='16' width='8' height='40'/%3E%3Crect x='8' y='16' width='40' height='8'/%3E%3Crect x='40' y='16' width='8' height='28'/%3E%3Crect x='24' y='36' width='24' height='8'/%3E%3Crect x='24' y='30' width='8' height='14'/%3E%3C/g%3E%3C/svg%3E");
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:var(--body);font-size:15px;line-height:1.6;color:var(--tinta);background-color:var(--papiro);
+  background-image:
+    radial-gradient(circle at 12% 18%,rgba(214,186,140,.35) 0 2px,transparent 3px),
+    radial-gradient(circle at 70% 60%,rgba(214,186,140,.30) 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 40% 85%,rgba(214,186,140,.30) 0 2px,transparent 3px),
+    radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(ellipse at 90% 80%,rgba(220,196,156,.35),transparent 55%);
+  background-size:37px 41px,53px 47px,71px 67px,100% 100%,100% 100%;
+  background-attachment:fixed;overflow-x:hidden}
+img{max-width:100%;display:block}
+.meandro{height:30px;background:var(--meandro) repeat-x center/30px 30px}
+.meandro.abajo{transform:scaleY(-1)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+
+/* ---- encabezado ---- */
+header.hero{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:24px;align-items:center;padding-block:28px 32px;text-align:center}
+.hero .col{height:360px;width:auto;margin:0 auto;opacity:.95}
+.hero-mid{display:grid;gap:14px;justify-items:center;min-width:0}
+.eyebrow{font-weight:800;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--oro-txt)}
+h1{margin:0;line-height:0}
+.titulo{width:min(560px,86vw);height:auto}
+.lema{width:min(640px,90vw);height:auto;margin-top:4px}
+.lede{margin:0;max-width:58ch;font-size:16px;font-weight:500}
+.lede b{font-weight:800}
+.bar{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 18px;align-items:center;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.04em;border:2px solid var(--tinta);background:var(--blanco)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.open{color:var(--ok)}
+.pill.closed{color:var(--alerta)}
+.pill.revealed{color:var(--tinta);background:var(--oro)}
+.progress{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--gris);font-variant-numeric:tabular-nums}
+.meter{width:140px;height:8px;border-radius:4px;background:var(--papiro-2);border:1px solid var(--linea);overflow:hidden}
+.meter b{display:block;height:100%;background:var(--oro);width:0;transition:width .3s}
+.notice{margin:8px 0 0;padding:14px 18px;border:2px solid var(--oro);border-radius:16px;background:var(--blanco);font-weight:600}
+
+/* ---- filtros ---- */
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 22px}
+.chip{font:700 13px var(--body);letter-spacing:.04em;padding:8px 16px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--oro)}
+.chip:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--tinta);outline-offset:2px}
+
+/* ---- tarjetas ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+.card{background:var(--blanco);border:3px solid var(--oro);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 14px 34px rgba(120,90,40,.10);transition:box-shadow .2s}
+.card.done{box-shadow:6px 6px 0 var(--tinta)}
+.num{font:800 12px var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--oro-txt)}
+.card h2{font-family:var(--display);font-size:22px;font-weight:900;margin:0;line-height:1.15;letter-spacing:.03em;text-wrap:balance}
+.force{align-self:flex-start;font:800 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--tinta);background:var(--oro);padding:4px 10px;border-radius:6px}
+.myth{font-size:13px;color:var(--gris);font-style:italic;margin:0}
+.desc{margin:0;font-size:14px;font-weight:500}
+.vote{margin-top:auto;padding-top:14px;border-top:2px dotted var(--linea);display:grid;gap:8px}
+.vote label{font:800 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
+.picker{position:relative}
+.picker input{width:100%;font:500 15px var(--body);padding:11px 14px;border-radius:12px;border:2px solid var(--tinta);background:#fff;color:var(--tinta)}
+.picker input::placeholder{color:#8c8378}
+.list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;background:var(--blanco);border:2px solid var(--tinta);border-radius:12px;box-shadow:4px 4px 0 var(--tinta);max-height:260px;overflow:auto;padding:4px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:500 14px var(--body);padding:9px 10px;border:0;border-radius:8px;background:transparent;color:var(--tinta);cursor:pointer}
+.opt:hover,.opt.active{background:var(--oro-suave)}
+.opt[disabled]{opacity:.5;cursor:default}
+.opt-hint{padding:8px 10px;font-size:13px;color:var(--gris)}
+.opt small{color:var(--gris);margin-left:auto;font-size:12px}
+.who{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--oro);min-width:0}
+.who span{flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}
+.link{font:700 13px var(--body);border:0;background:none;color:var(--tinta);cursor:pointer;text-decoration:underline;padding:0}
+.winners{display:grid;gap:8px}
+.win{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.medal{font:900 13px var(--display);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--tinta);background:var(--blanco);flex:none}
+.win:first-child .medal{background:var(--oro)}
+.win:first-child span{font-weight:800}
+.win span{flex:1;min-width:0;overflow-wrap:anywhere}
+.win em{font-style:normal;color:var(--gris);font-size:13px}
+.empty{color:var(--gris);font-size:13px}
+
+/* ---- botones ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;font:800 13px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:11px 20px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer;text-decoration:none;box-shadow:3px 3px 0 var(--tinta);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--tinta)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
+.btn.primary{background:var(--oro)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* ---- organizador ---- */
+.admin{margin-top:40px;border:3px solid var(--tinta);border-radius:24px;background:var(--blanco);padding:22px;display:grid;gap:18px}
+.admin h3{font-family:var(--display);font-weight:900;margin:0;font-size:24px}
+.admin .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.stat{font-variant-numeric:tabular-nums;color:var(--gris);font-size:14px;font-weight:600}
+.stat b{color:var(--tinta);font-size:22px;margin-right:4px}
+.tally{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.tcard{border:2px solid var(--linea);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;background:#fff}
+.tcard h4{margin:0;font-family:var(--display);font-weight:900;font-size:15px}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13px;font-variant-numeric:tabular-nums}
+.trow .tb{grid-column:1/-1;height:6px;border-radius:3px;background:var(--papiro-2);overflow:hidden}
+.trow .tb b{display:block;height:100%;background:var(--oro)}
+.confirm{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;font-weight:600;padding:12px 14px;border-radius:14px;background:var(--oro-suave);border:2px solid var(--oro)}
+
+/* ---- sede ---- */
+.citybox{margin:20px 0 6px;background:var(--blanco);border:3px solid var(--tinta);border-radius:24px;padding:18px 22px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px}
+.citybox.missing{border-color:var(--alerta);box-shadow:0 0 0 4px var(--alerta-suave)}
+.citybox h2{font-family:var(--display);font-weight:900;font-size:22px;margin:0;letter-spacing:.02em}
+.citybox p{margin:2px 0 0;font-size:14px;color:var(--gris);font-weight:500}
+.citybox-txt{min-width:0;flex:1 1 280px}
+.city-opts{display:flex;gap:10px;flex-wrap:wrap}
+.city-opt{font:800 15px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:12px 26px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer;box-shadow:3px 3px 0 var(--tinta)}
+.city-opt[aria-pressed="true"]{background:var(--oro)}
+.city-opt:disabled{cursor:default;box-shadow:none;opacity:.55}
+.city-opt[aria-pressed="true"]:disabled{opacity:1}
+.sendbar-btns{display:flex;gap:10px;flex-wrap:wrap}
+.sendbar.confirm-mode{border-top-color:var(--alerta)}
+.sendbar.done-mode{border-top-color:var(--ok)}
+.sendbar.done-mode #sendTitle{color:var(--ok)}
+
+/* ---- barra de envío ---- */
+.sendbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--blanco);border-top:3px solid var(--oro);box-shadow:0 -10px 30px rgba(120,90,40,.15);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sendbar-in{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px}
+.sendbar-info{display:grid;gap:2px;min-width:0}
+.sendbar-info b{font-weight:800;font-size:15px}
+.sendbar-info span{font-size:13px;color:var(--gris);font-weight:600}
+.sendbar .btn{font-size:15px;padding:13px 28px}
+body.has-sendbar{padding-bottom:110px}
+.who.pending{background:var(--oro-suave);border:2px dashed var(--oro-osc)}
+.tag-pend{font:800 10px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--alerta)}
+.tag-ok{font:800 10px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--ok)}
+.card.missing{border-color:var(--alerta);box-shadow:0 0 0 4px var(--alerta-suave)}
+.notice.ok{border-color:var(--ok);color:var(--ok);background:var(--ok-suave)}
+
+/* ---- pie ---- */
+footer{margin-top:40px;display:grid;justify-items:center;gap:10px;color:var(--gris);font-size:12px;text-align:center}
+footer .logos{width:min(360px,80vw);height:auto}
+
+@media (max-width:820px){
+  header.hero{grid-template-columns:minmax(0,1fr)}
+  .hero .col{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="meandro"></div>
+<div class="wrap">
+  <header class="hero">
+    <img class="col" src="https://bienestar-smartfit.github.io/smart-elysium-votacion/assets/columna-izq.png" alt="">
+    <div class="hero-mid">
+      <div class="eyebrow">Reconocimientos Perú · Los Dioses del Olimpo Smart Fit</div>
+      <h1><img class="titulo" src="https://bienestar-smartfit.github.io/smart-elysium-votacion/assets/titulo.png" alt="Smart Elysium" width="1200" height="408"></h1>
+      <img class="lema" src="https://bienestar-smartfit.github.io/smart-elysium-votacion/assets/lema.png" alt="Detrás de cada imperio hay mentes brillantes que sostienen las columnas" width="1400" height="140">
+      <p class="lede"><b>¡Dioses del Olimpo, llegó la hora de coronar a las leyendas!</b> Vota por el colaborador del equipo de Perú que mejor encarna cada fuerza. Vota en las categorías que quieras (una, varias o las 12) y pulsa <b>Enviar votos</b>. Revisa bien: una vez enviados no se pueden cambiar. Tu voto solo lo ve el equipo organizador.</p>
+      <div class="bar">
+        <span class="pill open" id="statusPill"><i></i><span id="statusText">Cargando…</span></span>
+        <span class="progress"><span class="meter"><b id="meterFill"></b></span><span id="progressText">0 de 12 categorías elegidas</span></span>
+        <span class="progress" id="meLine"></span>
+      </div>
+    </div>
+    <img class="col" src="https://bienestar-smartfit.github.io/smart-elysium-votacion/assets/columna-der.png" alt="">
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="citybox" id="cityBox" hidden>
+    <div class="citybox-txt"><h2 id="cityTitle">¿En qué sede celebras?</h2><p id="citySub">Elige tu ciudad.</p></div>
+    <div class="city-opts" id="cityOpts" role="group" aria-label="Sede"></div>
+  </section>
+
+  <div class="filters" id="filters" role="group" aria-label="Filtrar por fuerza"></div>
+  <main class="grid" id="grid"></main>
+
+  <section class="admin" id="admin" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h3>Panel del organizador</h3>
+      <span class="stat"><b id="ballotCount">0</b>personas han votado</span>
+    </div>
+    <div class="row" id="adminCities" role="group" aria-label="Sede del conteo"></div>
+    <div class="row" id="adminActions"></div>
+    <div id="confirmBox" hidden></div>
+    <div class="tally" id="tally"></div>
+  </section>
+
+  <footer>
+    <img class="logos" src="https://bienestar-smartfit.github.io/smart-elysium-votacion/assets/logos.png" alt="Smart Fit 10 años · Smart Fit Bienestar" width="794" height="167">
+    <span>Smart Elysium · 12 reconocimientos · 6 fuerzas</span>
+  </footer>
+</div>
+<div class="meandro abajo"></div>
+<div class="sendbar" id="sendbar" hidden>
+  <div class="sendbar-in">
+    <div class="sendbar-info"><b id="sendTitle">Elige a tus nominados</b><span id="sendSub">Tus votos se guardan cuando pulses Enviar votos.</span></div>
+    <div class="sendbar-btns"><button type="button" class="btn" id="backBtn" hidden>Revisar</button><button type="button" class="btn primary" id="sendBtn">Enviar votos</button></div>
+  </div>
+</div>
+
+<script>
+const ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"];
+const $=s=>document.querySelector(s);
+const el=(t,cls,txt)=>{const e=document.createElement(t);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;};
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+
+/* google.script.run como promesa */
+function call(fn,...args){
+  return new Promise((res,rej)=>{
+    if(!(window.google&&google.script&&google.script.run)){rej(new Error("Abre la votación desde su enlace oficial."));return;}
+    google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args);
+  });
+}
+const errMsg=e=>(e&&e.message?e.message:String(e||"Error")).replace(/^Exception:\s*/,"");
+
+let CATS=[],CITIES=[],people=[],me="",isAdmin=false,status="abierta",draft={},city="",myCity="",sent=false,sending=false,confirming=false,results=null,tallyData=null,filter="all",adminCity="";
+
+function notice(msg,ok){const n=$("#notice");n.textContent=msg||"";n.hidden=!msg;n.classList.toggle("ok",!!ok);}
+const clone=o=>JSON.parse(JSON.stringify(o||{}));
+
+/* ---------- estructura ---------- */
+function buildFilters(){
+  const f=$("#filters");f.replaceChildren();
+  const forces=[...new Set(CATS.map(c=>c.f))];
+  [["all","Todas"],...forces.map(x=>[x,x])].forEach(([v,l])=>{
+    const b=el("button","chip",l);b.type="button";b.setAttribute("aria-pressed",String(v===filter));
+    b.onclick=()=>{filter=v;f.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",String(c===b)));
+      CATS.forEach(c=>{document.getElementById("card-"+c.id).hidden=!(filter==="all"||c.f===filter);});};
+    f.append(b);
+  });
+}
+function buildCards(){
+  const g=$("#grid");g.replaceChildren();
+  CATS.forEach((c,i)=>{
+    const card=el("article","card");card.id="card-"+c.id;
+    card.append(el("div","num","Reconocimiento "+ROMAN[i]),el("h2",null,c.n));
+    const fc=el("span","force",c.f);fc.title=c.fe;card.append(fc);
+    card.append(el("p","myth",c.m),el("p","desc",c.d));
+    const v=el("div","vote");v.id="vote-"+c.id;card.append(v);
+    g.append(card);
+  });
+}
+
+/* ---------- ciudad ---------- */
+function renderCity(){
+  const box=$("#cityBox");box.hidden=(!me&&status!=="publicada")||CITIES.length<2;
+  const opts=$("#cityOpts");opts.replaceChildren();
+  const pub=status==="publicada";
+  $("#cityTitle").textContent=pub?"Resultados de":(sent?"Tu sede":"¿En qué sede celebras?");
+  $("#citySub").textContent=pub?"Elige la sede para ver sus ganadores.":(sent?"Tu sede quedó registrada con tus votos.":"Elige tu ciudad. Tus votos cuentan para los reconocimientos de esa sede.");
+  CITIES.forEach(c=>{
+    const b=el("button","city-opt",c);b.type="button";b.setAttribute("aria-pressed",String(city===c));
+    b.disabled=!pub&&(sent||sending||status!=="abierta");
+    b.onclick=()=>{city=c;confirming=false;$("#cityBox").classList.remove("missing");if(!pub&&!document.querySelector(".card.missing"))notice("");renderAll();};
+    opts.append(b);
+  });
+}
+
+/* ---------- votos ---------- */
+function renderVote(c){
+  const v=document.getElementById("vote-"+c.id);
+  const card=document.getElementById("card-"+c.id);
+  const p=draft[c.id];
+  card.classList.toggle("done",sent&&!!p);
+  if(v.dataset.mode==="search"&&v.contains(document.activeElement))return;
+  v.replaceChildren();v.dataset.mode="";
+  if(status==="publicada"){
+    v.append(el("label",null,"Ganadores · "+(city||"")));
+    const res=((results||{})[city]||{})[c.id]||[];
+    if(!res.length)v.append(el("div","empty","Sin votos en esta categoría."));
+    else{const w=el("div","winners");res.forEach((r,i)=>{const row=el("div","win");row.append(el("span","medal",String(i+1)),el("span",null,r.name),el("em",null,r.count+(r.count===1?" voto":" votos")));w.append(row);});v.append(w);}
+    if(p&&city===myCity)v.append(el("div","empty","Tu voto: "+p.name));
+    return;
+  }
+  const lab=el("label",null,p?"Tu voto ":"Tu nominado ");
+  if(p)lab.append(el("span",sent?"tag-ok":"tag-pend",sent?"· enviado":"· sin enviar"));
+  v.append(lab);
+  const open=status==="abierta"&&!!me&&!sending&&!sent;
+  if(p){
+    const who=el("div","who"+(sent?"":" pending"));who.append(el("span",null,p.name));
+    if(open){
+      const ch=el("button","link","Cambiar");ch.type="button";ch.onclick=()=>openPicker(c,v);
+      const rm=el("button","link","Quitar");rm.type="button";rm.onclick=()=>{delete draft[c.id];confirming=false;renderAll();};
+      who.append(ch,rm);
+    }
+    v.append(who);
+  }else if(open)openPicker(c,v,false);
+  else v.append(el("div","empty",status==="cerrada"?"La votación está cerrada.":(sent?"Sin voto en esta categoría.":"No disponible.")));
+}
+
+function openPicker(c,v,focus=true){
+  v.replaceChildren();v.dataset.mode="search";
+  const lab=el("label",null,people.length?"Busca a tu nominado ":"Escribe el nombre de tu nominado ");
+  v.append(lab);
+  const wrap=el("div","picker");
+  const inp=document.createElement("input");inp.id="pick-"+c.id;inp.type="text";inp.autocomplete="off";
+  inp.placeholder="Escribe el nombre de la persona…";inp.setAttribute("aria-label","Nominado para "+c.n);
+  const list=el("div","list");list.hidden=true;list.setAttribute("role","listbox");
+  wrap.append(inp,list);v.append(wrap);
+  if(draft[c.id]){const cancel=el("button","link","Cancelar");cancel.type="button";cancel.onclick=()=>{v.dataset.mode="";renderVote(c);};v.append(cancel);}
+  let active=-1,opts=[];
+  const choose=pick=>{v.dataset.mode="";inp.blur();draft[c.id]=pick;confirming=false;document.getElementById("card-"+c.id).classList.remove("missing");if(!document.querySelector(".card.missing"))notice("");renderAll();};
+  const draw=()=>{
+    const q=inp.value,nq=norm(q);list.replaceChildren();opts=[];active=-1;
+    const words=nq.split(/\s+/).filter(Boolean);
+    const score=p=>{const n=norm(p.name),a=norm(p.area);if(!words.every(w=>n.includes(w)||a.includes(w)))return -1;return n.startsWith(nq)?0:(n.split(/\s+/).some(t=>t.startsWith(words[0]))?1:2);};
+    const hits=(nq?people.map(p=>[score(p),p]).filter(x=>x[0]>=0).sort((x,y)=>x[0]-y[0]||x[1].name.localeCompare(y[1].name)).map(x=>x[1]):people.slice().sort((x,y)=>x.name.localeCompare(y.name))).slice(0,10);
+    if(!hits.length&&nq&&people.length){list.append(el("div","opt-hint","No encontramos «"+q.trim()+"» en la lista."));}
+    hits.forEach(h=>{
+      const b=el("button","opt");b.type="button";b.setAttribute("role","option");
+      b.append(el("span",null,h.name));if(h.area)b.append(el("small",null,h.area));
+      const self=h.email&&h.email===me;
+      if(self){b.disabled=true;b.append(el("small",null," · eres tú"));}
+      b.onmousedown=e=>e.preventDefault();
+      b.onclick=()=>choose({name:h.name,email:h.email});
+      list.append(b);if(!self)opts.push(b);
+    });
+    const exact=people.some(p=>norm(p.name)===nq);
+    if(q.trim().length>=2&&!exact){
+      const b=el("button","opt");b.type="button";b.setAttribute("role","option");
+      b.append(el("span",null,"Agregar a «"+q.trim()+"»"),el("small",null,"nombre nuevo"));
+      b.onmousedown=e=>e.preventDefault();
+      b.onclick=()=>choose({name:q.trim().slice(0,80),email:""});
+      list.append(b);opts.push(b);
+    }
+    list.hidden=!list.children.length;
+  };
+  inp.addEventListener("input",draw);
+  inp.addEventListener("focus",()=>{draw();refreshPeople();});
+  inp.addEventListener("blur",()=>setTimeout(()=>{list.hidden=true;},120));
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();if(!opts.length)return;
+      active=(active+(e.key==="ArrowDown"?1:-1)+opts.length)%opts.length;opts.forEach((o,i)=>o.classList.toggle("active",i===active));}
+    else if(e.key==="Enter"){e.preventDefault();if(active>=0)opts[active].click();else if(opts.length===1)opts[0].click();}
+    else if(e.key==="Escape"){list.hidden=true;}
+  });
+  if(focus)inp.focus();
+}
+
+/* ---------- lista de personas (se actualiza sola) ---------- */
+let lastPeopleFetch=0,peopleBusy=false;
+async function refreshPeople(force){
+  if(!me||peopleBusy||(!force&&Date.now()-lastPeopleFetch<20000))return;
+  peopleBusy=true;
+  try{people=await call("getPeople")||people;lastPeopleFetch=Date.now();
+    const a=document.activeElement;if(a&&a.id&&a.id.startsWith("pick-"))a.dispatchEvent(new Event("input"));}
+  catch(e){}
+  peopleBusy=false;
+}
+setInterval(()=>{if(!document.hidden)refreshPeople(true);},60000);
+window.addEventListener("focus",()=>refreshPeople());
+
+/* ---------- envío ---------- */
+function missingCats(){return CATS.filter(c=>!draft[c.id]);}
+function renderSendBar(){
+  const bar=$("#sendbar"),show=status==="abierta"&&!!me&&CATS.length>0;
+  bar.hidden=!show;document.body.classList.toggle("has-sendbar",show);if(!show)return;
+  const sel=CATS.length-missingCats().length,falta=CATS.length-sel,btn=$("#sendBtn"),back=$("#backBtn");
+  bar.classList.toggle("confirm-mode",confirming);bar.classList.toggle("done-mode",sent);
+  back.hidden=!confirming;btn.hidden=sent;
+  if(sent){$("#sendTitle").textContent="¡Gracias! Tus votos fueron enviados";$("#sendSub").textContent="Sede "+city+" · "+sel+" de "+CATS.length+" categorías. Los votos enviados no se pueden cambiar.";return;}
+  if(sending){$("#sendTitle").textContent="Enviando tus votos…";$("#sendSub").textContent="No cierres la página.";btn.disabled=true;btn.textContent="Enviando…";return;}
+  btn.disabled=false;
+  if(confirming){$("#sendTitle").textContent="¿Enviar tus votos?";$("#sendSub").textContent="Sede "+city+" · "+sel+" de "+CATS.length+" categorías."+(falta?" Las "+falta+" sin nominado quedarán vacías.":"")+" Después de enviar no podrás cambiar ni agregar votos.";btn.textContent="Sí, enviar";return;}
+  btn.textContent="Enviar votos";
+  if(!sel&&!city){$("#sendTitle").textContent="Elige tu sede y tus nominados";$("#sendSub").textContent="Vota en las categorías que quieras: puede ser una, varias o las "+CATS.length+".";}
+  else if(!city){$("#sendTitle").textContent="Te falta elegir tu sede";$("#sendSub").textContent=sel+" de "+CATS.length+" categorías elegidas. Elige tu sede para poder enviar.";}
+  else if(!sel){$("#sendTitle").textContent="Elige al menos un nominado";$("#sendSub").textContent="Sede "+city+". Vota en las categorías que quieras: puede ser una, varias o las "+CATS.length+".";}
+  else{$("#sendTitle").textContent="¡Listo para enviar!";$("#sendSub").textContent="Sede "+city+" · "+sel+" de "+CATS.length+" categorías. Revisa bien: después de enviar no podrás cambiar ni agregar votos.";}
+}
+async function onSend(){
+  if(sending||sent)return;
+  const sel=CATS.length-missingCats().length;
+  $("#cityBox").classList.toggle("missing",!city);
+  if(!city||!sel){
+    const partes=[];if(!city)partes.push("tu sede");if(!sel)partes.push("al menos un nominado");
+    notice("Te falta elegir "+partes.join(" y ")+".");
+    (!city?$("#cityBox"):$("#grid")).scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  if(!confirming){confirming=true;renderSendBar();return;}
+  sending=true;confirming=false;renderAll();
+  try{
+    applyData(await call("submitVotes",clone(draft),city));
+    notice("¡Listo! Tus votos fueron enviados. Gracias por participar en Smart Elysium.",true);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }catch(e){notice("No se enviaron tus votos: "+errMsg(e));}
+  sending=false;renderAll();if(isAdmin)loadTally();
+}
+$("#sendBtn").addEventListener("click",onSend);
+$("#backBtn").addEventListener("click",()=>{confirming=false;renderSendBar();});
+window.addEventListener("beforeunload",e=>{if(status==="abierta"&&!sent&&(Object.keys(draft).length||city)){e.preventDefault();e.returnValue="";}});
+
+/* ---------- encabezado ---------- */
+function renderHeader(){
+  $("#statusPill").className="pill "+({abierta:"open",cerrada:"closed",publicada:"revealed"}[status]||"open");
+  $("#statusText").textContent={abierta:"Votación abierta",cerrada:"Votación cerrada",publicada:"Resultados publicados"}[status]||status;
+  const n=CATS.filter(c=>draft[c.id]).length;
+  $("#meterFill").style.width=(CATS.length?n/CATS.length*100:0)+"%";
+  $("#progressText").textContent=sent?"Votos enviados":n+" de "+CATS.length+" categorías elegidas";
+  $("#meLine").textContent=me?"Votando como "+me:"";
+}
+function renderAll(){renderHeader();renderCity();CATS.forEach(renderVote);renderSendBar();renderAdmin();}
+
+/* ---------- organizadores ---------- */
+let pendingAction=null;
+async function loadTally(){
+  if(!isAdmin)return;
+  try{tallyData=await call("getTally");status=tallyData.status;}catch(e){notice(errMsg(e));}
+  renderHeader();renderAdmin();
+}
+function renderAdmin(){
+  const box=$("#admin");if(!isAdmin){box.hidden=true;return;}box.hidden=false;
+  const view=tallyData?(adminCity?tallyData.byCity[adminCity]:tallyData.all):null;
+  $("#ballotCount").textContent=view?view.voters:"…";
+  const tabs=$("#adminCities");tabs.replaceChildren();
+  [["","Todas"],...CITIES.map(c=>[c,c])].forEach(([v,l])=>{
+    const b=el("button","chip",l+(tallyData?" ("+(v?tallyData.byCity[v].voters:tallyData.all.voters)+")":""));b.type="button";b.setAttribute("aria-pressed",String(adminCity===v));
+    b.onclick=()=>{adminCity=v;renderAdmin();};tabs.append(b);
+  });
+  const acts=$("#adminActions");acts.replaceChildren();
+  const mk=(txt,act,primary)=>{const b=el("button","btn"+(primary?" primary":""),txt);b.type="button";b.onclick=()=>{pendingAction=act;renderConfirm();};acts.append(b);};
+  if(status==="abierta")mk("Cerrar votación","cerrada");
+  if(status!=="abierta")mk("Reabrir votación","abierta");
+  if(status!=="publicada")mk("Publicar resultados","publicada",true);
+  if(status==="publicada")mk("Ocultar resultados","cerrada");
+  const rf=el("button","btn","Actualizar conteo");rf.type="button";rf.onclick=loadTally;acts.append(rf);
+  acts.append(el("span","stat","Solo los organizadores ven este conteo."));
+  const tl=$("#tally");tl.replaceChildren();
+  const t=(view&&view.tally)||{};
+  CATS.forEach(c=>{
+    const card=el("div","tcard");card.append(el("h4",null,c.n));
+    const rows=t[c.id]||[];
+    if(!rows.length)card.append(el("div","empty","Aún sin votos."));
+    const max=rows.length?rows[0].count:1;
+    rows.slice(0,5).forEach(r=>{const row=el("div","trow");row.append(el("span",null,r.name),el("strong",null,String(r.count)));
+      const tb=el("div","tb");const fill=document.createElement("b");fill.style.width=(r.count/max*100)+"%";tb.append(fill);row.append(tb);card.append(row);});
+    tl.append(card);
+  });
+  renderConfirm();
+}
+function renderConfirm(){
+  const cb=$("#confirmBox");cb.replaceChildren();if(!pendingAction){cb.hidden=true;return;}cb.hidden=false;
+  const msg={cerrada:status==="publicada"?"¿Ocultar los resultados? La votación quedará cerrada.":"¿Cerrar la votación? Nadie más podrá enviar votos.",
+    abierta:"¿Reabrir la votación? Se ocultarán los resultados publicados.",
+    publicada:"¿Publicar resultados? Todos verán el top 3 de cada categoría."}[pendingAction];
+  const box=el("div","confirm");box.append(el("span",null,msg));
+  const yes=el("button","btn primary","Confirmar");yes.type="button";
+  yes.onclick=async()=>{const a=pendingAction;pendingAction=null;yes.disabled=true;
+    try{applyData(await call("setStatus",a));await loadTally();}catch(e){notice(errMsg(e));}renderAll();};
+  const no=el("button","btn","Cancelar");no.type="button";no.onclick=()=>{pendingAction=null;renderConfirm();};
+  box.append(yes,no);cb.append(box);
+}
+
+/* ---------- arranque ---------- */
+function applyData(d){
+  const wasSent=sent;
+  me=d.me||"";isAdmin=!!d.isAdmin;status=d.status||"abierta";CITIES=d.cities||["Lima"];
+  people=d.people||[];results=d.results||null;sent=!!d.sent;
+  if(sent||!wasSent&&!Object.keys(draft).length)draft=clone(d.myPicks);
+  myCity=d.myCity||"";if(d.myCity)city=d.myCity;
+  if((status==="publicada"||CITIES.length===1)&&!city)city=CITIES[0];
+  if(!CATS.length){CATS=d.cats;buildFilters();buildCards();}
+}
+(async()=>{
+  try{
+    applyData(await call("getInitialData"));
+    if(!me)notice("No pudimos identificar tu cuenta. Entra con tu correo corporativo de Google para votar.");
+    else if(sent&&status==="abierta")notice("Ya enviaste tus votos (sede "+city+"). Gracias por participar.",true);
+    renderAll();
+    if(isAdmin){loadTally();setInterval(()=>{if(!document.hidden)loadTally();},30000);}
+  }catch(e){notice("No se pudo cargar la votación: "+errMsg(e));$("#statusText").textContent="Sin conexión";}
+})();
+</script>
+</body>
+</html>
