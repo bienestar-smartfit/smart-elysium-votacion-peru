@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Elysium Perú · Votación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap">
+<style>
+/* Layout: invitación Smart Elysium — papiro con meandro dorado, columnas a los lados del título, tarjetas tipo pergamino. Tema único claro, como la invitación. */
+:root{
+  --oro:#fdb813; --oro-osc:#e09b00; --oro-txt:#8a5a00; --oro-suave:#fff2b0;
+  --tinta:#161412; --papiro:#f3e9d8; --papiro-2:#ecdfc8; --blanco:#fffdf8; --gris:#5b544b; --linea:#e3d3b4;
+  --ok:#1f7a45; --ok-suave:#dcf0e2; --alerta:#9a4d00; --alerta-suave:#fde3c2;
+  --display:"Cinzel",Georgia,serif;
+  --body:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --meandro:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23fdb813'%3E%3Crect x='0' y='0' width='64' height='8'/%3E%3Crect x='0' y='56' width='64' height='8'/%3E%3Crect x='8' y='16' width='8' height='40'/%3E%3Crect x='8' y='16' width='40' height='8'/%3E%3Crect x='40' y='16' width='8' height='28'/%3E%3Crect x='24' y='36' width='24' height='8'/%3E%3Crect x='24' y='30' width='8' height='14'/%3E%3C/g%3E%3C/svg%3E");
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:var(--body);font-size:15px;line-height:1.6;color:var(--tinta);background-color:var(--papiro);
+  background-image:
+    radial-gradient(circle at 12% 18%,rgba(214,186,140,.35) 0 2px,transparent 3px),
+    radial-gradient(circle at 70% 60%,rgba(214,186,140,.30) 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 40% 85%,rgba(214,186,140,.30) 0 2px,transparent 3px),
+    radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(ellipse at 90% 80%,rgba(220,196,156,.35),transparent 55%);
+  background-size:37px 41px,53px 47px,71px 67px,100% 100%,100% 100%;
+  background-attachment:fixed;overflow-x:hidden}
+img{max-width:100%;display:block}
+.meandro{height:30px;background:var(--meandro) repeat-x center/30px 30px}
+.meandro.abajo{transform:scaleY(-1)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+
+/* ---- encabezado ---- */
+header.hero{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:24px;align-items:center;padding-block:28px 32px;text-align:center}
+.hero .col{height:360px;width:auto;margin:0 auto;opacity:.95}
+.hero-mid{display:grid;gap:14px;justify-items:center;min-width:0}
+.eyebrow{font-weight:800;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--oro-txt)}
+h1{margin:0;line-height:0}
+.titulo{width:min(560px,86vw);height:auto}
+.lema{width:min(640px,90vw);height:auto;margin-top:4px}
+.lede{margin:0;max-width:58ch;font-size:16px;font-weight:500}
+.lede b{font-weight:800}
+.bar{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 18px;align-items:center;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.04em;border:2px solid var(--tinta);background:var(--blanco)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.open{color:var(--ok)}
+.pill.closed{color:var(--alerta)}
+.pill.revealed{color:var(--tinta);background:var(--oro)}
+.progress{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--gris);font-variant-numeric:tabular-nums}
+.meter{width:140px;height:8px;border-radius:4px;background:var(--papiro-2);border:1px solid var(--linea);overflow:hidden}
+.meter b{display:block;height:100%;background:var(--oro);width:0;transition:width .3s}
+.notice{margin:8px 0 0;padding:14px 18px;border:2px solid var(--oro);border-radius:16px;background:var(--blanco);font-weight:600}
+
+/* ---- filtros ---- */
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 22px}
+.chip{font:700 13px var(--body);letter-spacing:.04em;padding:8px 16px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--oro)}
+.chip:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--tinta);outline-offset:2px}
+
+/* ---- tarjetas ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+.card{background:var(--blanco);border:3px solid var(--oro);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 14px 34px rgba(120,90,40,.10);transition:box-shadow .2s}
+.card.done{box-shadow:6px 6px 0 var(--tinta)}
+.num{font:800 12px var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--oro-txt)}
+.card h2{font-family:var(--display);font-size:22px;font-weight:900;margin:0;line-height:1.15;letter-spacing:.03em;text-wrap:balance}
+.force{align-self:flex-start;font:800 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--tinta);background:var(--oro);padding:4px 10px;border-radius:6px}
+.myth{font-size:13px;color:var(--gris);font-style:italic;margin:0}
+.desc{margin:0;font-size:14px;font-weight:500}
+.vote{margin-top:auto;padding-top:14px;border-top:2px dotted var(--linea);display:grid;gap:8px}
+.vote label{font:800 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
+.picker{position:relative}
+.picker input{width:100%;font:500 15px var(--body);padding:11px 14px;border-radius:12px;border:2px solid var(--tinta);background:#fff;color:var(--tinta)}
+.picker input::placeholder{color:#8c8378}
+.list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;background:var(--blanco);border:2px solid var(--tinta);border-radius:12px;box-shadow:4px 4px 0 var(--tinta);max-height:260px;overflow:auto;padding:4px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:500 14px var(--body);padding:9px 10px;border:0;border-radius:8px;background:transparent;color:var(--tinta);cursor:pointer}
+.opt:hover,.opt.active{background:var(--oro-suave)}
+.opt[disabled]{opacity:.5;cursor:default}
+.opt small{color:var(--gris);margin-left:auto;font-size:12px}
+.who{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--oro);min-width:0}
+.who span{flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}
+.link{font:700 13px var(--body);border:0;background:none;color:var(--tinta);cursor:pointer;text-decoration:underline;padding:0}
+.winners{display:grid;gap:8px}
+.win{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.medal{font:900 13px var(--display);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--tinta);background:var(--blanco);flex:none}
+.win:first-child .medal{background:var(--oro)}
+.win:first-child span{font-weight:800}
+.win span{flex:1;min-width:0;overflow-wrap:anywhere}
+.win em{font-style:normal;color:var(--gris);font-size:13px}
+.empty{color:var(--gris);font-size:13px}
+
+/* ---- botones ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;font:800 13px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:11px 20px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer;text-decoration:none;box-shadow:3px 3px 0 var(--tinta);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--tinta)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
+.btn.primary{background:var(--oro)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* ---- organizador ---- */
+.admin{margin-top:40px;border:3px solid var(--tinta);border-radius:24px;background:var(--blanco);padding:22px;display:grid;gap:18px}
+.admin h3{font-family:var(--display);font-weight:900;margin:0;font-size:24px}
+.admin .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.stat{font-variant-numeric:tabular-nums;color:var(--gris);font-size:14px;font-weight:600}
+.stat b{color:var(--tinta);font-size:22px;margin-right:4px}
+.tally{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.tcard{border:2px solid var(--linea);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;background:#fff}
+.tcard h4{margin:0;font-family:var(--display);font-weight:900;font-size:15px}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13px;font-variant-numeric:tabular-nums}
+.trow .tb{grid-column:1/-1;height:6px;border-radius:3px;background:var(--papiro-2);overflow:hidden}
+.trow .tb b{display:block;height:100%;background:var(--oro)}
+.confirm{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;font-weight:600;padding:12px 14px;border-radius:14px;background:var(--oro-suave);border:2px solid var(--oro)}
+
+/* ---- pie ---- */
+footer{margin-top:40px;display:grid;justify-items:center;gap:10px;color:var(--gris);font-size:12px;text-align:center}
+footer .logos{width:min(360px,80vw);height:auto}
+
+@media (max-width:820px){
+  header.hero{grid-template-columns:minmax(0,1fr)}
+  .hero .col{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+/* Layout: invitación Smart Elysium — papiro con meandro dorado, columnas a los lados del título, tarjetas tipo pergamino. Tema único claro, como la invitación. */
+:root{
+  --oro:#fdb813; --oro-osc:#e09b00; --oro-txt:#8a5a00; --oro-suave:#fff2b0;
+  --tinta:#161412; --papiro:#f3e9d8; --papiro-2:#ecdfc8; --blanco:#fffdf8; --gris:#5b544b; --linea:#e3d3b4;
+  --ok:#1f7a45; --ok-suave:#dcf0e2; --alerta:#9a4d00; --alerta-suave:#fde3c2;
+  --display:"Cinzel",Georgia,serif;
+  --body:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --meandro:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='%23fdb813'%3E%3Crect x='0' y='0' width='64' height='8'/%3E%3Crect x='0' y='56' width='64' height='8'/%3E%3Crect x='8' y='16' width='8' height='40'/%3E%3Crect x='8' y='16' width='40' height='8'/%3E%3Crect x='40' y='16' width='8' height='28'/%3E%3Crect x='24' y='36' width='24' height='8'/%3E%3Crect x='24' y='30' width='8' height='14'/%3E%3C/g%3E%3C/svg%3E");
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:var(--body);font-size:15px;line-height:1.6;color:var(--tinta);background-color:var(--papiro);
+  background-image:
+    radial-gradient(circle at 12% 18%,rgba(214,186,140,.35) 0 2px,transparent 3px),
+    radial-gradient(circle at 70% 60%,rgba(214,186,140,.30) 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 40% 85%,rgba(214,186,140,.30) 0 2px,transparent 3px),
+    radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(ellipse at 90% 80%,rgba(220,196,156,.35),transparent 55%);
+  background-size:37px 41px,53px 47px,71px 67px,100% 100%,100% 100%;
+  background-attachment:fixed;overflow-x:hidden}
+img{max-width:100%;display:block}
+.meandro{height:30px;background:var(--meandro) repeat-x center/30px 30px}
+.meandro.abajo{transform:scaleY(-1)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 32px}
+
+/* ---- encabezado ---- */
+header.hero{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:24px;align-items:center;padding-block:28px 32px;text-align:center}
+.hero .col{height:360px;width:auto;margin:0 auto;opacity:.95}
+.hero-mid{display:grid;gap:14px;justify-items:center;min-width:0}
+.eyebrow{font-weight:800;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--oro-txt)}
+h1{margin:0;line-height:0}
+.titulo{width:min(560px,86vw);height:auto}
+.lema{width:min(640px,90vw);height:auto;margin-top:4px}
+.lede{margin:0;max-width:58ch;font-size:16px;font-weight:500}
+.lede b{font-weight:800}
+.bar{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 18px;align-items:center;margin-top:4px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.04em;border:2px solid var(--tinta);background:var(--blanco)}
+.pill i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.open{color:var(--ok)}
+.pill.closed{color:var(--alerta)}
+.pill.revealed{color:var(--tinta);background:var(--oro)}
+.progress{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--gris);font-variant-numeric:tabular-nums}
+.meter{width:140px;height:8px;border-radius:4px;background:var(--papiro-2);border:1px solid var(--linea);overflow:hidden}
+.meter b{display:block;height:100%;background:var(--oro);width:0;transition:width .3s}
+.notice{margin:8px 0 0;padding:14px 18px;border:2px solid var(--oro);border-radius:16px;background:var(--blanco);font-weight:600}
+
+/* ---- filtros ---- */
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 22px}
+.chip{font:700 13px var(--body);letter-spacing:.04em;padding:8px 16px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--oro)}
+.chip:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--tinta);outline-offset:2px}
+
+/* ---- tarjetas ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+.card{background:var(--blanco);border:3px solid var(--oro);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 14px 34px rgba(120,90,40,.10);transition:box-shadow .2s}
+.card.done{box-shadow:6px 6px 0 var(--tinta)}
+.num{font:800 12px var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--oro-txt)}
+.card h2{font-family:var(--display);font-size:22px;font-weight:900;margin:0;line-height:1.15;letter-spacing:.03em;text-wrap:balance}
+.force{align-self:flex-start;font:800 11px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--tinta);background:var(--oro);padding:4px 10px;border-radius:6px}
+.myth{font-size:13px;color:var(--gris);font-style:italic;margin:0}
+.desc{margin:0;font-size:14px;font-weight:500}
+.vote{margin-top:auto;padding-top:14px;border-top:2px dotted var(--linea);display:grid;gap:8px}
+.vote label{font:800 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
+.picker{position:relative}
+.picker input{width:100%;font:500 15px var(--body);padding:11px 14px;border-radius:12px;border:2px solid var(--tinta);background:#fff;color:var(--tinta)}
+.picker input::placeholder{color:#8c8378}
+.list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:5;background:var(--blanco);border:2px solid var(--tinta);border-radius:12px;box-shadow:4px 4px 0 var(--tinta);max-height:260px;overflow:auto;padding:4px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:500 14px var(--body);padding:9px 10px;border:0;border-radius:8px;background:transparent;color:var(--tinta);cursor:pointer}
+.opt:hover,.opt.active{background:var(--oro-suave)}
+.opt[disabled]{opacity:.5;cursor:default}
+.opt small{color:var(--gris);margin-left:auto;font-size:12px}
+.who{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--oro);min-width:0}
+.who span{flex:1;min-width:0;font-weight:800;overflow-wrap:anywhere}
+.link{font:700 13px var(--body);border:0;background:none;color:var(--tinta);cursor:pointer;text-decoration:underline;padding:0}
+.winners{display:grid;gap:8px}
+.win{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.medal{font:900 13px var(--display);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--tinta);background:var(--blanco);flex:none}
+.win:first-child .medal{background:var(--oro)}
+.win:first-child span{font-weight:800}
+.win span{flex:1;min-width:0;overflow-wrap:anywhere}
+.win em{font-style:normal;color:var(--gris);font-size:13px}
+.empty{color:var(--gris);font-size:13px}
+
+/* ---- botones ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;font:800 13px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:11px 20px;border-radius:999px;border:2px solid var(--tinta);background:var(--blanco);color:var(--tinta);cursor:pointer;text-decoration:none;box-shadow:3px 3px 0 var(--tinta);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--tinta)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
+.btn.primary{background:var(--oro)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* ---- organizador ---- */
+.admin{margin-top:40px;border:3px solid var(--tinta);border-radius:24px;background:var(--blanco);padding:22px;display:grid;gap:18px}
+.admin h3{font-family:var(--display);font-weight:900;margin:0;font-size:24px}
+.admin .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.stat{font-variant-numeric:tabular-nums;color:var(--gris);font-size:14px;font-weight:600}
+.stat b{color:var(--tinta);font-size:22px;margin-right:4px}
+.tally{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.tcard{border:2px solid var(--linea);border-radius:14px;padding:14px;display:grid;gap:8px;min-width:0;background:#fff}
+.tcard h4{margin:0;font-family:var(--display);font-weight:900;font-size:15px}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13px;font-variant-numeric:tabular-nums}
+.trow .tb{grid-column:1/-1;height:6px;border-radius:3px;background:var(--papiro-2);overflow:hidden}
+.trow .tb b{display:block;height:100%;background:var(--oro)}
+.confirm{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;font-weight:600;padding:12px 14px;border-radius:14px;background:var(--oro-suave);border:2px solid var(--oro)}
+
+/* ---- pie ---- */
+footer{margin-top:40px;display:grid;justify-items:center;gap:10px;color:var(--gris);font-size:12px;text-align:center}
+footer .logos{width:min(360px,80vw);height:auto}
+
+@media (max-width:820px){
+  header.hero{grid-template-columns:minmax(0,1fr)}
+  .hero .col{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="meandro"></div>
+<div class="wrap">
+  <header class="hero">
+    <img class="col" src="assets/columna-izq.png" alt="">
+    <div class="hero-mid">
+      <div class="eyebrow">Reconocimientos Perú · Los Dioses del Olimpo Smart Fit</div>
+      <h1><img class="titulo" src="assets/titulo.png" alt="Smart Elysium" width="1200" height="408"></h1>
+      <img class="lema" src="assets/lema.png" alt="Detrás de cada imperio hay mentes brillantes que sostienen las columnas" width="1400" height="140">
+      <p class="lede"><b>¡Dioses del Olimpo, la hora de la gran celebración ha llegado!</b> Doce reconocimientos, seis fuerzas. Entra con tu correo corporativo y vota por el colaborador del equipo de Perú que mejor encarna cada una. Lima, 11 de diciembre.</p>
+    </div>
+    <img class="col" src="assets/columna-der.png" alt="">
+  </header>
+  <section class="landing">
+    <a class="btn primary cta" id="cta" href="#" hidden>Ir a votar →</a>
+    <div class="notice" id="setup" hidden>La votación todavía no está conectada. Pega la URL de la aplicación web de Apps Script en <code>config.js</code>.</div>
+    <ol class="cats">
+      <li><span class="num">I</span><strong>El Oráculo de Delfos</strong><span class="force">Data Driven</span></li>
+      <li><span class="num">II</span><strong>El Rayo de Zeus</strong><span class="force">Move Fast</span></li>
+      <li><span class="num">III</span><strong>La Fuerza de Hércules</strong><span class="force">Ownership</span></li>
+      <li><span class="num">IV</span><strong>La Falange de Esparta</strong><span class="force">Teamwork</span></li>
+      <li><span class="num">V</span><strong>La Luz de Apolo</strong><span class="force">Customer Centric</span></li>
+      <li><span class="num">VI</span><strong>La Visión de Atenea</strong><span class="force">Leading the Future</span></li>
+      <li><span class="num">VII</span><strong>Las Alas de Hermes</strong><span class="force">Move Fast</span></li>
+      <li><span class="num">VIII</span><strong>La Brújula de Nereo</strong><span class="force">Data Driven</span></li>
+      <li><span class="num">IX</span><strong>El Escudo de Prometeo</strong><span class="force">Ownership</span></li>
+      <li><span class="num">X</span><strong>El Vellocino de Oro</strong><span class="force">Customer Centric</span></li>
+      <li><span class="num">XI</span><strong>La Antorcha de Titán</strong><span class="force">Leading the Future</span></li>
+      <li><span class="num">XII</span><strong>La Armonía de las Musas</strong><span class="force">Teamwork</span></li>
+    </ol>
+  </section>
+  <footer>
+    <img class="logos" src="assets/logos.png" alt="Smart Fit 10 años · Smart Fit Bienestar" width="794" height="167">
+    <span>Smart Elysium Perú · 12 reconocimientos · 6 fuerzas</span>
+  </footer>
+</div>
+<div class="meandro abajo"></div>
+<script src="config.js"></script>
+<script>
+  var url=(window.SMART_ELYSIUM_URL||"").trim();
+  if(/^https:\/\/script\.google\.com\//.test(url)){var a=document.getElementById("cta");a.href=url;a.hidden=false;}
+  else document.getElementById("setup").hidden=false;
+</script>
+</body>
+</html>
